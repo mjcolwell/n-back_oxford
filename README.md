@@ -9,11 +9,13 @@ Pre-processing scripts made by Hosana Tagomori (hosana.tagomori@lmh.ox.ac.uk) & 
 Debugged by: Chloe Wigg, Amy Gillespie, Calum Guinea, & Tereza Ruzickova
 
 ## License: 
-The task materials and preprocessing script are offered free of charge for researchers. **It is requested that researchers who publish data using these materials (task or preprocessing script) cite the code for the task in relevant publications.**
+The task materials and preprocessing script are offered free of charge for researchers. 
+**It is requested that researchers who publish data using these materials (task or preprocessing script) cite the code for the task in relevant publications.**
 
 **Please cite the code and supplementary materials below**:
 
 *N-Back Task Reference*
+
 Colwell, M., Tagomori, H., Murphy, S., & Harmer, H. (2021). N-Back Task (Version 1.3). Zenodo. https://doi.org/
 
 This task is currently in-use in the Psychopharmacology and Emotion Laboratory (PERL) at the Department of Psychiatry, University of Oxford. Two ongoing psychopharmacology projects (FEN&COG - NCT05026398; PROGRESS) are currently using these tasks.
