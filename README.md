@@ -3,9 +3,9 @@
 # N-Back Task (PERL - Oxford)
 Version 1.3 (21/02/2022)
 
-Task made by Michael Colwell (michael.colwell@psych.ox.ac.uk)
+Task made by Michael Colwell (michael.colwell@psych.ox.ac.uk).
 
-Pre-processing scripts made by Hosana Tagomori (hosana.tagomori@lmh.ox.ac.uk) & Michael Colwell (michael.colwell@psych.ox.ac.uk)
+Pre-processing scripts made by Hosana Tagomori (hosana.tagomori@lmh.ox.ac.uk) & Michael Colwell (michael.colwell@psych.ox.ac.uk).
 
 Debugged by: Chloe Wigg, Amy Gillespie, Calum Guinea, & Tereza Ruzickova
 
@@ -15,12 +15,11 @@ It is requested that researchers who publish data using these materials (task or
 
 **Please cite the code below**:
 
-Colwell, M., Tagomori, H., Murphy, S., & Harmer, H. (2021). N-Back Task (Version 1.3). Zenodo. https://doi.org/
+Colwell, M., Tagomori, H., Murphy, S., & Harmer, H. (2021). N-Back Task (Version 1.3). Zenodo. https://doi.org/10.5281/zenodo.6208667
 
 This task is currently in-use in the Psychopharmacology and Emotion Laboratory (PERL) at the Department of Psychiatry, University of Oxford. Two ongoing psychopharmacology projects (FEN&COG - NCT05026398; PROGRESS) are currently using these tasks.
 
 ## Information
-Requires 
 
 This is a standard N-Back working memory task, with four subtypes (n-types):  zero-back, one-back, two-back, & three-back. 
 
