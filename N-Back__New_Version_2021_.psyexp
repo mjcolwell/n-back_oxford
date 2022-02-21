@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" ?>
-<PsychoPy2experiment encoding="utf-8" version="2021.1.4">
+<PsychoPy2experiment encoding="utf-8" version="2021.2.3">
   <Settings>
     <Param name="Audio latency priority" updates="None" val="use prefs" valType="str"/>
     <Param name="Audio lib" updates="None" val="use prefs" valType="str"/>
@@ -16,6 +16,7 @@
     <Param name="Resources" updates="None" val="[]" valType="list"/>
     <Param name="Save csv file" updates="None" val="False" valType="bool"/>
     <Param name="Save excel file" updates="None" val="False" valType="bool"/>
+    <Param name="Save hdf5 file" updates="None" val="False" valType="bool"/>
     <Param name="Save log file" updates="None" val="True" valType="bool"/>
     <Param name="Save psydat file" updates="None" val="True" valType="bool"/>
     <Param name="Save wide csv file" updates="None" val="True" valType="bool"/>
@@ -28,9 +29,29 @@
     <Param name="blendMode" updates="None" val="avg" valType="str"/>
     <Param name="color" updates="None" val="black" valType="color"/>
     <Param name="colorSpace" updates="None" val="rgb" valType="str"/>
+    <Param name="elAddress" updates="None" val="100.1.1.1" valType="str"/>
+    <Param name="elDataFiltering" updates="None" val="FILTER_LEVEL_2" valType="str"/>
+    <Param name="elLiveFiltering" updates="None" val="FILTER_LEVEL_OFF" valType="str"/>
+    <Param name="elModel" updates="None" val="EYELINK 1000 DESKTOP" valType="str"/>
+    <Param name="elPupilAlgorithm" updates="None" val="ELLIPSE_FIT" valType="str"/>
+    <Param name="elPupilMeasure" updates="None" val="PUPIL_AREA" valType="str"/>
+    <Param name="elSampleRate" updates="None" val="1000" valType="num"/>
+    <Param name="elSimMode" updates="None" val="False" valType="bool"/>
+    <Param name="elTrackEyes" updates="None" val="RIGHT_EYE" valType="str"/>
+    <Param name="elTrackingMode" updates="None" val="PUPIL_CR_TRACKING" valType="str"/>
     <Param name="expName" updates="None" val="N-Back (New Version 2021)" valType="str"/>
     <Param name="exportHTML" updates="None" val="on Sync" valType="str"/>
+    <Param name="eyetracker" updates="None" val="None" valType="str"/>
+    <Param name="gpAddress" updates="None" val="127.0.0.1" valType="str"/>
+    <Param name="gpPort" updates="None" val="4242" valType="num"/>
     <Param name="logging level" updates="None" val="exp" valType="code"/>
+    <Param name="mgBlink" updates="None" val="MIDDLE_BUTTON" valType="list"/>
+    <Param name="mgMove" updates="None" val="CONTINUOUS" valType="str"/>
+    <Param name="mgSaccade" updates="None" val="0.5" valType="num"/>
+    <Param name="tbLicenseFile" updates="None" val="" valType="str"/>
+    <Param name="tbModel" updates="None" val="" valType="str"/>
+    <Param name="tbSampleRate" updates="None" val="60" valType="num"/>
+    <Param name="tbSerialNo" updates="None" val="" valType="str"/>
   </Settings>
   <Routines>
     <Routine name="trial_proper">
@@ -82,8 +103,8 @@
       <CodeComponent name="VersionCode">
         <Param name="Before Experiment" updates="constant" val="" valType="extendedCode"/>
         <Param name="Before JS Experiment" updates="constant" val="" valType="extendedCode"/>
-        <Param name="Begin Experiment" updates="constant" val="TaskVersion = expInfo['Task Version (required to run)'] &amp;#10;&amp;#10;TaskVersion = TaskVersion.replace(' ', '')&amp;#10;&amp;#10;if TaskVersion == '1':&amp;#10;        VersionSelection = 'Conditions/NbackMaster_v1.xlsx'&amp;#10;        PracticeSelection = 'Conditions/NbackMasterPract_v1.xlsx'&amp;#10;        &amp;#10;if TaskVersion == '2':&amp;#10;        VersionSelection = 'Conditions/NbackMaster_v1.xlsx'&amp;#10;        PracticeSelection = 'Conditions/NbackMasterPract_v2.xlsx'" valType="extendedCode"/>
-        <Param name="Begin JS Experiment" updates="constant" val="TaskVersion = expInfo[&quot;Task Version (required to run)&quot;];&amp;#10;TaskVersion = TaskVersion.replace(&quot; &quot;, &quot;&quot;);&amp;#10;if ((TaskVersion === &quot;1&quot;)) {&amp;#10;    VersionSelection = &quot;Conditions/NbackMaster_v1.xlsx&quot;;&amp;#10;    PracticeSelection = &quot;Conditions/NbackMasterPract_v1.xlsx&quot;;&amp;#10;}&amp;#10;if ((TaskVersion === &quot;2&quot;)) {&amp;#10;    VersionSelection = &quot;Conditions/NbackMaster_v1.xlsx&quot;;&amp;#10;    PracticeSelection = &quot;Conditions/NbackMasterPract_v2.xlsx&quot;;&amp;#10;}&amp;#10;" valType="extendedCode"/>
+        <Param name="Begin Experiment" updates="constant" val="TaskVersion = expInfo['Task Version (required to run)'] &amp;#10;&amp;#10;TaskVersion = TaskVersion.replace(' ', '')&amp;#10;&amp;#10;if TaskVersion == '1':&amp;#10;        VersionSelection = 'Conditions/NbackMaster_v1.xlsx'&amp;#10;        PracticeSelection = 'Conditions/NbackMasterPract_v1.xlsx'&amp;#10;        &amp;#10;if TaskVersion == '2':&amp;#10;        VersionSelection = 'Conditions/NbackMaster_v2.xlsx'&amp;#10;        PracticeSelection = 'Conditions/NbackMasterPract_v2.xlsx'" valType="extendedCode"/>
+        <Param name="Begin JS Experiment" updates="constant" val="TaskVersion = expInfo[&quot;Task Version (required to run)&quot;];&amp;#10;TaskVersion = TaskVersion.replace(&quot; &quot;, &quot;&quot;);&amp;#10;if ((TaskVersion === &quot;1&quot;)) {&amp;#10;    VersionSelection = &quot;Conditions/NbackMaster_v1.xlsx&quot;;&amp;#10;    PracticeSelection = &quot;Conditions/NbackMasterPract_v1.xlsx&quot;;&amp;#10;}&amp;#10;if ((TaskVersion === &quot;2&quot;)) {&amp;#10;    VersionSelection = &quot;Conditions/NbackMaster_v2.xlsx&quot;;&amp;#10;    PracticeSelection = &quot;Conditions/NbackMasterPract_v2.xlsx&quot;;&amp;#10;}&amp;#10;" valType="extendedCode"/>
         <Param name="Begin JS Routine" updates="constant" val="" valType="extendedCode"/>
         <Param name="Begin Routine" updates="constant" val="" valType="extendedCode"/>
         <Param name="Code Type" updates="None" val="Auto-&gt;JS" valType="str"/>
