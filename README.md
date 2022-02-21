@@ -10,11 +10,9 @@ Debugged by: Chloe Wigg, Amy Gillespie, Calum Guinea, & Tereza Ruzickova
 
 ## License: 
 The task materials and preprocessing script are offered free of charge for researchers. 
-**It is requested that researchers who publish data using these materials (task or preprocessing script) cite the code for the task in relevant publications.**
+It is requested that researchers who publish data using these materials (task or preprocessing script) cite the code for the task in relevant publications.
 
-**Please cite the code and supplementary materials below**:
-
-*N-Back Task Reference*
+**Please cite the code below**:
 
 Colwell, M., Tagomori, H., Murphy, S., & Harmer, H. (2021). N-Back Task (Version 1.3). Zenodo. https://doi.org/
 
