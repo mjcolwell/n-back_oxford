@@ -1,5 +1,3 @@
-#################################################
-
 # N-Back - fMRI and non-scanner task (PERL - Oxford)
 
 Task of verbal working memory (n-back) made by Michael Colwell (michael.colwell@psych.ox.ac.uk).
