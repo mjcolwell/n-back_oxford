@@ -1,0 +1,313 @@
+---
+title: "N-back Preprocessing"
+date:"24/02/2022"
+output: html_document
+---
+## N-back RMarkdown (February 24, 2022; Version 0.1)
+
+This is an RMarkdown to allow for reproducible and accurate preprocessing of the N-back Psychopy 
+task data created by Michael Colwell (michael.colwell@psych.ox.ac.uk / ORCID 0000-0001-7846-2879).
+
+The task materials and preprocessing script are offered free of charge for researchers. **It is requested that researchers who publish data using these materials (task or preprocessing script) cite the code for the task
+in relevant publications**. Our reference is:
+
+Colwell, M., Tagomori, H., Murphy, S., & Harmer, H. (2021). N-Back Task (Version 1.3). Zenodo. https://doi.org/10.5281/zenodo.6208667
+
+##Required R packages
+
+You will need the following packages installed and loaded before executing the below code chunks. 
+
+```{r libraries, echo=FALSE, include=FALSE}
+library(dplyr)
+library(tidyverse)
+library(gtools)
+library(knitr)
+library(stringr)
+library(purrr)
+library(readxl)
+library(data.table)
+library(openxlsx)
+library(ggpubr)
+library(rstatix)
+library('ez')
+library(ggsignif)
+library(RColorBrewer)
+library(emmeans)
+library(plotrix)
+```
+
+##Begin preprocessing: Setting directory, merging files and deleting unnecessary columns
+
+You will first need to point to the directory of your task files, typically in the 'data' subfolder where the
+psychopy task is located. **Please edit the path directory below after the setwd function.**
+
+The next lines in the chunk of code will allow you to merge all data files (.csv) in the directory assigned above to a dataframe, and then delete extraneous columns from the dataframe.
+
+**Potential error**: "Error in rbind(deparse.level, ...) : numbers of columns of arguments do not match"
+**Solution**: One of the .csv files may not have run beyond the practice section, therefore not enough columns
+have generated. Delete this file and then continue.
+
+```{r b0, echo=FALSE, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+rm(list=ls()) # clear the workspace
+
+setwd("C:/DIR.HERE")
+
+N_back_files <- list.files(pattern=glob2rx("*Back*.csv")) #create a list of files containing the word 'Back'.
+
+N_back <- N_back_files %>% map_dfr(read.csv) #stack the files containing the word 'Back' on top of each other.
+
+N_back <- N_back %>% rename(Task.version=Task.Version..required.to.run., Participant.ID=participant) 
+
+N_back <- N_back %>% dplyr::select(Participant.ID, PRE.POST, Task.version, Instructions, ISIjitterPractice, CorrectnessP, KeyPractice.corr, KeyPractice.rt, Correctness, key_resp.corr,key_resp.rt,ISIjitter,CondFile, CondFileP, LettersDisplayed)
+
+#Note that the 'correctness'; column refers to the actual key they should have pressed for the actual trials and that 'correctnessP' refers to the actual key they should have pressed for the practice trials.
+
+N_back <- N_back %>%
+  mutate(key_resp.rt = key_resp.rt*1000,  ISI.time = ISIjitter*100, ISI.time.pract = ISIjitterPractice*100) #change the reaction times to ms. 
+
+N_back <- N_back %>% mutate(ISI.combined = coalesce(ISI.time, ISI.time.pract)) #combining the ISI time and ISI practice together into one column.
+
+N_back <- N_back %>% mutate(Condition.Files.Combined = coalesce(CondFileP,CondFile))
+#combining the CondFileP and CondFile columns together into one column.
+
+N_back <- N_back %>% mutate(Correct.Combined = coalesce(KeyPractice.corr, key_resp.corr)) #combining the keyPractice.corr and key_resp.corr columns into a single column.
+
+N_back <- N_back %>% mutate(Response.Time.Combined = coalesce(KeyPractice.rt, key_resp.rt)) #combining the keyPractice.rt and key_resp.rt columns into a single column.
+
+```
+##Further parsing the dataframe 
+
+The following chunks will allow you to further parse the data, including generating omission/comission error checks
+based on conditions set in the file.
+
+```{r b0, echo=FALSE, include=TRUE}
+
+N_back_first_tidy <- N_back %>%
+  mutate(Result = case_when((Correctness == "None" & Correct.Combined == "1") ~ 'snp_TRUE',
+                            (Correctness == "None" & Correct.Combined == "0") ~ 'snp_FALSE',
+                            (Correctness == "space" & Correct.Combined == "1") ~ 'sp_TRUE',
+                            (Correctness == "space" & Correct.Combined == "0") ~ 'sp_FALSE'),
+         n_back = case_when((Instructions == "Rule: Press 'space' when you see the letter 'x' or 'X'.") ~ '0-back',
+                            (Instructions == "New rule: Press 'space' when you see the letter 'x' or 'X'.") ~ '0-back',
+                            (Instructions == "New rule: Press 'space' when you see 1-back (i.e. the same letter as the one that appeared 1 letter ago.)") ~ '1-back',
+                            (Instructions == "New rule: Press 'space' when you see 2-back (i.e. the same letter as the one that appeared 2 letters ago.)") ~ '2-back',
+                            (Instructions == "New rule: Press 'space' when you see 3-back (i.e. the same letter as the one that appeared 3 letters ago.)") ~ '3-back'))
+
+#Outputing the result & identifying the number of "n" in n-back tests and output as the form of "n-back"
+
+N_back_first_tidy <- N_back_first_tidy %>% dplyr::select(Participant.ID, PRE.POST, n_back, LettersDisplayed, Correct.Combined, Result, Response.Time.Combined)
+#Selecting the necessary items
+
+N_back_first_tidy <- N_back_first_tidy %>% rename(CharacterDisplayed = LettersDisplayed, KeyResponse_correct = Correct.Combined, ResponseTime = Response.Time.Combined)
+#Renaming the columns
+
+#write.csv(N_back_summary, outputname, row.names = FALSE) #write to a new csv file
+
+##Calculating the correctness
+
+N_back_Correctness_Total <- N_back_first_tidy %>%
+  mutate(snp_TRUE_total = case_when((Result == "snp_TRUE") ~ 1,
+                                   (Result == "snp_FALSE") ~ 0),
+         snp_FALSE_total = case_when((Result == "snp_TRUE") ~ 0,
+                                    (Result == "snp_FALSE") ~ 1),
+         sp_TRUE_total = case_when((Result == "sp_TRUE") ~ 1,
+                                  (Result == "sp_FALSE") ~ 0),
+         sp_FALSE_total = case_when((Result == "sp_TRUE") ~ 0,
+                                   (Result == "sp_FALSE") ~ 1))
+#Transforming the output to the "0/1" form
+
+##Extract the response time only when SP_TRUE = 1 (hit response time)
+##the response time originally include the hit response time and the false hit response time
+N_back_Correctness_Total <- N_back_Correctness_Total %>%
+  transform(RT_Hits = ifelse(sp_TRUE_total==1, ResponseTime, NA)) 
+#create RT_Hits, when sp_TRUE_total = 1, show response time, else, show NA (which will now be counted on the table)
+
+N_back_Correctness_Total <- N_back_Correctness_Total %>% dplyr::select(Participant.ID, PRE.POST, n_back, snp_TRUE_total, snp_FALSE_total, sp_TRUE_total, sp_FALSE_total, ResponseTime, RT_Hits)
+#Selecting the necessary items
+
+
+##Summarising scores according to participant ID and n-back
+N_back_Summary_Table <- N_back_Correctness_Total %>%
+ group_by(Participant.ID, n_back, PRE.POST) %>%
+ summarize(mean_RT = mean(RT_Hits, na.rm = TRUE), 
+           SP_TRUE_acc = sum(sp_TRUE_total, na.rm = TRUE), 
+           SP_FALSE_acc = sum(sp_FALSE_total, na.rm = TRUE),
+           SNP_FALSE_acc = sum(snp_FALSE_total, na.rm = TRUE),
+           SNP_TRUE_acc = sum(snp_TRUE_total, na.rm = TRUE))
+
+#Accuracy = hits - false alarms
+
+##Initial step to roughly calculate the total accuracy in scores, comparing between Pre/post and N-back
+#N_back_InitialAccuracy <- N_back_Summary_Table %>%
+#  group_by(n_back, PRE.POST) %>%
+#  summarize(mean_RT = mean(mean_RT, na.rm = TRUE), sd_RT = sd(mean_RT, na.rm = TRUE),
+#            mean_acc = mean(accuracy, na.rm = TRUE),  sd_acc = sd(accuracy, na.rm = TRUE))
+
+##Accuracy = hits - false alarms(proportion hits minus false alarms) RT = just for the hits
+##Hit rate = #hit/(#hit + #miss)
+##FA rate = #FA/(#FA + #CR)
+##D' = Z(Hit rate) - Z(FA rate)
+
+##Second step to calculate the total accuracy in proportion (with the actual proportion accuracy & hit RT)
+N_back_SecondAccuracy <- N_back_Summary_Table %>%
+  mutate(Hit_rate = SP_TRUE_acc/(SP_TRUE_acc + SP_FALSE_acc),
+         FA_rate = SNP_FALSE_acc/(SNP_TRUE_acc + SNP_FALSE_acc),
+         ACCURACY = Hit_rate - FA_rate) %>%  #These parts calculate accuracy according to the above formula
+  dplyr::select(n_back, PRE.POST, Hit_rate, FA_rate, ACCURACY, mean_RT) %>% #select stuff that we need
+  group_by(n_back, PRE.POST) %>% #compare between n-back and pre.post; show the mean of data from all participants
+  summarize(mean_ResTime = mean(mean_RT, na.rm = TRUE), sd_ResTime = sd(mean_RT, na.rm = TRUE),
+            mean_ACC = mean(ACCURACY, na.rm = TRUE), sd_ACC = sd(ACCURACY, na.rm = TRUE)) #calculate the mean and sd
+
+##source: https://www.tandfonline.com/doi/pdf/10.1080/09658211003702171?needAccess=true -> result part
+##source: https://reader.elsevier.com/reader/sd/pii/S1053811920301701?token=C583067FFC23ADBD90F08EE05E1B86F995125903DD865256E25C78E6AC9456DB9036EFEB215606CDDC66420C11881C1C&originRegion=eu-west-1&originCreation=20220601214839 -> result part
+
+##also, have to divide the whole group into placebo and drug again, now the results are a mixture
+
+```
+
+```{r b0, echo=FALSE, include=TRUE}
+
+##Data quality checks
+
+N_back_Summary_Table2 <- N_back_Correctness_Total %>%
+ group_by(Participant.ID, PRE.POST) %>%
+ summarize(mean_RT = mean(RT_Hits, na.rm = TRUE), 
+           SP_TRUE_acc = sum(sp_TRUE_total, na.rm = TRUE), 
+           SP_FALSE_acc = sum(sp_FALSE_total, na.rm = TRUE),
+           SNP_FALSE_acc = sum(snp_FALSE_total, na.rm = TRUE),
+           SNP_TRUE_acc = sum(snp_TRUE_total, na.rm = TRUE))
+
+N_back_Summary_Table2 <- N_back_Summary_Table2 %>% filter(!grepl('NaN', mean_RT))
+
+is_outlier <- function(x) {
+  return(x < quantile(x, 0.25) - 3.0 * IQR(x) | x > quantile(x, 0.75) + 3.0 * IQR(x))
+}
+
+###IQR 3.0 * IQR?
+
+N_back_Summary_Table2 %>% mutate(PRE.POST = as.character(PRE.POST))
+
+N_back_Summary_Table2 %>% 
+  group_by(PRE.POST) %>%
+  mutate(outlier=ifelse(is_outlier(SP_TRUE_acc),PRE.POST,"NA")) %>%
+  ggplot(aes(x=factor(PRE.POST), SP_TRUE_acc)) + 
+    geom_boxplot(outlier.colour = NA) +
+ scale_x_discrete(limits = unique(rev(N_back_Summary_Table2$PRE.POST))) +
+    ggbeeswarm::geom_beeswarm(aes(color=SP_TRUE_acc)) +
+    ggrepel::geom_text_repel(data=. %>% filter(!is.na(outlier)), aes(label=Participant.ID)) +
+    scale_colour_gradient(low="blue",high="red")+labs(title = "Participant average accuracy for all 'should press key' trials")+   ylab("Accuracy")+ xlab("Pre or Post")
+
+N_back_Summary_Table2 %>% 
+  group_by(PRE.POST) %>%
+  mutate(outlier=ifelse(is_outlier(SNP_TRUE_acc),PRE.POST,"NA")) %>%
+  ggplot(aes(x=factor(PRE.POST), SNP_TRUE_acc)) + 
+    geom_boxplot(outlier.colour = NA) +
+   scale_x_discrete(limits = unique(rev(N_back_Summary_Table2$PRE.POST))) +
+    ggbeeswarm::geom_beeswarm(aes(color=SNP_TRUE_acc)) +
+    ggrepel::geom_text_repel(data=. %>% filter(!is.na(outlier)), aes(label=Participant.ID)) +
+    scale_colour_gradient(low="blue",high="red")+labs(title = "Participant average accuracy for all 'should not press key' trials")+   ylab("Accuracy")+ xlab("Pre or Post")
+
+N_back_Summary_Table2 %>% 
+  group_by(PRE.POST) %>%
+  mutate(outlier=ifelse(is_outlier(mean_RT),PRE.POST,"NA")) %>%
+  ggplot(aes(x=factor(PRE.POST), mean_RT)) + 
+    geom_boxplot(outlier.colour = NA) +
+   scale_x_discrete(limits = unique(rev(N_back_Summary_Table2$PRE.POST))) +
+    ggbeeswarm::geom_beeswarm(aes(color=mean_RT)) +
+    ggrepel::geom_text_repel(data=. %>% filter(!is.na(outlier)), aes(label=Participant.ID)) +
+    scale_colour_gradient(low="blue",high="red")+labs(title = "Participant average response time for all trials")+   ylab("Accuracy")+ xlab("Pre or Post")
+
+
+
+``````
+
+```{r b0, echo=FALSE, include=TRUE}
+
+setwd("C:/DIR.HERE")
+
+Demographics <- read.xlsx("Demo4Analysis.xlsx") 
+
+Demographics$Participant.ID <- as.factor(Demographics$Participant.ID)
+
+MasterNBackWide <- merge(N_back_Summary_Table, Demographics, by = "Participant.ID")
+
+MasterNBackWide <- na.omit(MasterNBackWide)
+
+MasterNBackWide$PRE.POST <- recode_factor(MasterNBackWide$PRE.POST, "Pre" = "Baseline")
+
+MasterNBackWidePostOnly <- MasterNBackWide %>% filter(!str_detect(PRE.POST, 'Baseline'))
+
+
+```
+
+
+```{r b0, echo=FALSE, include=TRUE}
+
+#Removal of all outliers from entire dataset (agreed before unblinding)
+
+MasterNBackWide$IDvisit <- paste(MasterNBackWide$Participant.ID,MasterNBackWide$PRE.POST)
+
+removal_df <- subset(MasterNBackWide, IDvisit != "P002 Baseline" & IDvisit != "P002 Post" & IDvisit != "P008 Baseline" & IDvisit != "P008 Post")
+
+#Consider removing participant 35
+
+MasterNBackWide <- droplevels(removal_df)
+
+```
+
+```{r b0, echo=FALSE, include=TRUE}
+
+#Create column for participant.id + visit + & n_back level + id
+MasterNBackWide$IDvisit <- paste(MasterNBackWide$Participant.ID,MasterNBackWide$PRE.POST)
+
+MasterNBackWide$IDnback <- paste(MasterNBackWide$Participant.ID,MasterNBackWide$n_back)
+
+#Split datasets into PRE and POST
+
+MasterNBackWidePostOnly <- MasterNBackWide %>% filter(!str_detect(PRE.POST, 'Baseline'))
+MasterNBackWidePreOnly <- MasterNBackWide %>% filter(!str_detect(PRE.POST, 'Post'))
+
+```
+
+#Graphs for report
+
+
+```{r}
+
+Figure1 <- MasterNBackWidePostOnly %>% 
+  group_by(PRE.POST,Allocation,n_back) %>%
+  summarize(value = mean(mean_RT), SE = std.error(mean_RT)) %>% ggplot(aes(n_back,value, group=Allocation))+
+    facet_wrap(~fct_rev(PRE.POST),nrow=1)+ 
+    scale_color_brewer(palette = "Set2")+
+      geom_errorbar(aes(x=n_back, ymin = value - SE, ymax = value + SE, color=Allocation),  width=0.25)+
+  geom_line(aes(color=Allocation),size=1.2)+
+geom_point(size=1.5)+
+   geom_signif(comparisons = list(c("ACTIVE", "PLACEBO")), 
+                p.adjust.method = "bonferroni",
+              map_signif_level=c("***"=0.001,"**"=0.01, "*"=0.05, " "=2),
+                    margin_top = 0.05)+
+labs(title = "Response time for correct hits across n-back paradigms\n")+   ylab("Response time (ms)\n")+ xlab("Working memory load level (n-back)\n")+theme_minimal()+
+  geom_segment(aes(x = 4.2, y = 800, xend = 4.2, yend = 700, group="segment"))+
+  geom_segment(aes(x = 4.15, y = 800, xend = 4.2, yend = 800, group="segment"))+
+  geom_segment(aes(x = 4.15, y = 700, xend = 4.2, yend = 700, group="segment"))+
+  geom_text(aes(x=4.3, label="*", y=750), colour="Black", size=5)
+
+#Remove 'PRE.POST' if only single measurement.
+
+```
+
+```
+
+##ANCOVA pre-processing and analysis
+
+```{r pressure, echo=FALSE}
+
+#####This will depend on your study design#####
+
+```
+
+
+
+
