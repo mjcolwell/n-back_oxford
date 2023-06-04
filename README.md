@@ -6,7 +6,7 @@ Task of verbal working memory (n-back) made by Michael Colwell (michael.colwell@
 
 ## Version 1.5 (04/06/2023)
 
-Latest version of the task overhauls old version (1.4 and earlier) with new stimuli, optimisations and two task versions;
+Latest version of the task overhauls older versions (1.4 and earlier) with new stimuli, optimisations and two task versions;
 
 1. The scanner task version has been designed for use during fMRI acquisition
 2. The  non-scanner task version can be completed standalone. This can be used to compliment the fMRI task for outside scanner practice.
