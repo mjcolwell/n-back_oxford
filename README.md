@@ -1,6 +1,6 @@
 #################################################
 
-# N-Back - fMRI and non-scanner tasks (PERL - Oxford)
+# N-Back - fMRI and non-scanner task (PERL - Oxford)
 
 Task of verbal working memory (n-back) made by Michael Colwell (michael.colwell@psych.ox.ac.uk).
 
@@ -16,6 +16,8 @@ Older versions of this task have been used within publications (e.g., https://ww
 ## License: 
 
 This release is open for free, academic use/modification. If you use this work in an academic paper/dissemination, **Please cite the code below**:
+
+Colwell, Michael, Tagomori, Hosana, Martens, Marieke, Murphy, Susannah, & Harmer, Catherine. (2023). N-Back (Oxford) - fMRI and non-scanner release (Python). Zenodo. https://doi.org/10.5281/zenodo.8003407
 
 ## Credits
 
