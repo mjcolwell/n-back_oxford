@@ -11,7 +11,7 @@ Latest version of the task overhauls older versions (1.4 and earlier) with new s
 1. The scanner task version has been designed for use during fMRI acquisition
 2. The  non-scanner task version can be completed standalone. This can be used to compliment the fMRI task for outside scanner practice.
 
-Older versions of this task have been used within publications (e.g., https://www.sciencedirect.com/science/article/pii/S2772408523000686?via%3Dihub). This version of the task is currently in use in the several projects in PERL Oxford (PEACE - NCT05849675; FEN&COG - NCT05026398; PROGRESS).
+Older versions of this task have been used within publications (e.g., https://www.sciencedirect.com/science/article/pii/S2772408523000686). This version of the task is currently in use in the several projects in PERL Oxford (PEACE - NCT05849675; FEN&COG - NCT05026398; PROGRESS).
 
 ## License: 
 
