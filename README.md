@@ -33,15 +33,30 @@ Original debuggers: Chloe Wigg, Amy Gillespie, Calum Guinea, & Tereza Ruzickova
 
 This is a standard N-Back working memory task, with four subtypes (n-types):  zero-back, one-back, two-back, & three-back. 
 
-Stimuli are displayed for 2000ms, with a random interstimulus interval of between 1000-2000ms. The block design of the old n-back task on E-Prime has been repurposed here (16 blocks total, 10 stimulus per block). 
-There will only  be 'target' stimuli around 2-3 times per each block (around 20-25%) as per standard n-back design.
+Stimuli are displayed for 500ms, with a fixed ISI of 1500ms. The block design of the old n-back task on E-Prime has been repurposed here (16 blocks total, 10 stimulus per block), which was used in the following publication: https://www.nature.com/articles/mp2017104
+
+There will only  be 'target' stimuli around 2-3 times per each block (around 20-25%) as per standard n-back design. 
 
 Each block has been mixed so that there is a different rule each block (permenant set-shifting). Four new practice blocks has been added to this version, as well as two seperate versions of the task for pre/post design. 
+
 You may generate new random lists using a partially completed random array generation script provided in the main folder ('ArrayScriptBase.py').
+
+If you are using this task in an fMRI scanner, you may find the python script in the 'Scripts' folder beneficial, as this allows automatic retrieval of relevant temporal information when creating contrasts/regressors in FSL.
 
 This task has been tested on a 120hz monitor but should work fine on a 60hz monitor.
 
 If you have any questions or encounter any bugs, please email michael.colwell@psych.ox.ac.uk
+
+## 1.5 Change log
+
+- Added code to allow undertaking main task without practice, practice only, and both.
+- Added a small dot fixation point (better than cross as it doesn't overlap letters) but does attract fixation to centre-screen
+- Added requirement to press 'left' key when a letter is not 'n-back' (i.e., it is not a recurring letter or X). Previously (version 1.0-1.3) participants did not press 
+a key here, but this approach likely undermeasured performance.
+- Altered the letters displayed to deter phonological or visual strategies (only using b, B, d, D, g, G, p, P, t, T, v, V)
+- Small error fixes
+- Rebalanced blocks so there for each n-back level there are two 'two target' blocks and two 'three target' blocks. Rebalanced so there are 5 uppercase letters, 5 lowercase letters per block.
+- Included a python file to extract scanner timings
 
 ## Instructions:
 
