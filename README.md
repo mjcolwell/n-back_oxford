@@ -1,23 +1,29 @@
 #################################################
 
-# N-Back Task (PERL - Oxford)
-Version 1.3 (21/02/2022)
+# N-Back - fMRI and non-scanner tasks (PERL - Oxford)
 
-Task made by Michael Colwell (michael.colwell@psych.ox.ac.uk).
+Task of verbal working memory (n-back) made by Michael Colwell (michael.colwell@psych.ox.ac.uk).
 
-Pre-processing scripts made by Hosana Tagomori (hosana.tagomori@lmh.ox.ac.uk) & Michael Colwell (michael.colwell@psych.ox.ac.uk).
+## Version 1.5 (04/06/2023)
 
-Debugged by: Chloe Wigg, Amy Gillespie, Calum Guinea, & Tereza Ruzickova
+Latest version of the task overhauls old version (1.4 and earlier) with new stimuli, optimisations and two task versions;
+
+1. The scanner task version has been designed for use during fMRI acquisition
+2. The  non-scanner task version can be completed standalone. This can be used to compliment the fMRI task for outside scanner practice.
+
+Older versions of this task have been used within publications (e.g., https://www.sciencedirect.com/science/article/pii/S2772408523000686?via%3Dihub). This version of the task is currently in use in the several projects in PERL Oxford (PEACE - NCT05849675; FEN&COG - NCT05026398; PROGRESS).
 
 ## License: 
-The task materials and preprocessing script are offered free of charge for researchers. 
-It is requested that researchers who publish data using these materials (task or preprocessing script) cite the code for the task in relevant publications.
 
-**Please cite the code below**:
+This release is open for free, academic use/modification. If you use this work in an academic paper/dissemination, **Please cite the code below**:
 
-Colwell, M., Tagomori, H., Murphy, S., & Harmer, H. (2021). N-Back Task (Version 1.3). Zenodo. https://doi.org/10.5281/zenodo.6208667
+## Credits
 
-This task is currently in-use in the Psychopharmacology and Emotion Laboratory (PERL) at the Department of Psychiatry, University of Oxford. Two ongoing psychopharmacology projects (FEN&COG - NCT05026398; PROGRESS) are currently using these tasks.
+Pre-processing scripts made by Hosana Tagomori (hosana.tagomori@lmh.ox.ac.uk) with optimisations by Michael Colwell.
+
+Massive help from Marieke Martens (marieke.martens@psych.ox.ac.uk) in helping to create a neuroimaging version of the task.
+
+Original debuggers: Chloe Wigg, Amy Gillespie, Calum Guinea, & Tereza Ruzickova
 
 ## Information
 
